@@ -31,7 +31,7 @@ class Options(BaseModel):
     type_dig: TypeDig
 
 
-class SubDomainFinder(Engine):
+class Dig(Engine):
     def start_scan(self, assets: Assets, options: Options, scan):
         results = []
         for asset in assets.values:
@@ -50,4 +50,4 @@ class SubDomainFinder(Engine):
         }
 
 
-engine = SubDomainFinder(Options)
+engine = Dig(Options)

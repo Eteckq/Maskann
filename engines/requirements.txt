@@ -1,2 +1,5 @@
 uvicorn
 fastapi
+fastapi-socketio
+validators
+sublist3r

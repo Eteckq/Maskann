@@ -4,3 +4,4 @@ fastapi-socketio
 validators
 sublist3r
 python-whois
+pydig

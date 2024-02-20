@@ -1,12 +1,7 @@
-from pydantic import BaseModel
 import sublist3r
 
 from base_engine.engine import Engine, Assets
 from base_engine.utils import is_domain
-
-
-class Options(BaseModel):
-    tokens: str
 
 
 class SubDomainFinder(Engine):

@@ -56,6 +56,7 @@ export default {
       return "obj";
     },
     list() {
+      if (!this.payload) return undefined;
       if (this.type === "obj") {
         return Object.keys(this.payload);
       }

@@ -3,6 +3,7 @@ from pydantic import BaseModel
 import threading
 from abc import ABC, abstractmethod
 import uuid
+import re
 from enum import Enum
 from fastapi_socketio import SocketManager
 import asyncio
@@ -52,10 +53,22 @@ class Engine(ABC):
                 attribut_name,
                 attribut_type,
             ) in self.scan_options.__annotations__.items():
-                if issubclass(attribut_type, Enum):
-                    options[attribut_name] = [e.value for e in attribut_type]
+                if "typing.Optional" in str(attribut_type):
+                    options[attribut_name] = {
+                        'type': re.findall(r"\[(.*?)\]", str(attribut_type))[0],
+                        'required': False,
+                    }
+                elif issubclass(attribut_type, Enum):
+                    options[attribut_name] = {
+                        'type': 'enum',
+                        'values': [e.value for e in attribut_type],
+                        'required': True,
+                    }
                 else:
-                    options[attribut_name] = attribut_type.__name__
+                    options[attribut_name] = {
+                        'type': attribut_type.__name__,
+                        'required': True,
+                    }
 
             return {
                 "engine": self.__class__.__name__,

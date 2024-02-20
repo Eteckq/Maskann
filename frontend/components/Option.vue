@@ -1,22 +1,23 @@
 <template>
   <Chips
-    v-if="getType == 'list'"
+    v-if="props.type.type == 'list'"
     :model-value="props.modelValue"
     @update:model-value="emits('update:model-value', $event)"
   />
   <Dropdown
-    v-else-if="getType == 'enum'"
-    :options="props.type"
+    v-else-if="props.type.type == 'enum'"
+    :options="props.type.values"
     :model-value="props.modelValue"
     @update:model-value="emits('update:model-value', $event)"
   />
   <InputText
-    v-else-if="getType == 'str'"
+  :required="true"
+    v-else-if="props.type.type == 'str'"
     :model-value="props.modelValue"
     @update:model-value="emits('update:model-value', $event)"
   />
   <InputNumber
-    v-else-if="getType == 'int'"
+    v-else-if="props.type.type == 'int'"
     :model-value="props.modelValue"
     @update:model-value="emits('update:model-value', $event)"
   />
@@ -25,12 +26,4 @@
 <script setup lang="ts">
 const props = defineProps(["modelValue", "type"]);
 const emits = defineEmits(["update:model-value"]);
-
-const getType = computed(() => {
-  if (Array.isArray(props.type)) {
-    return "enum";
-  }
-
-  return props.type;
-});
 </script>

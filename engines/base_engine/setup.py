@@ -9,7 +9,7 @@ setup(
     packages=["base_engine"],
     install_requires=[
         "fastapi",
-        "fastapi-socketio"
+        "fastapi-socketio",
         "pydantic",
         "validators",
         "uvicorn"

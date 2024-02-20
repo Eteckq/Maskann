@@ -30,7 +30,6 @@ class TypeDig(str, Enum):
 class Options(BaseModel):
     type_dig: TypeDig
 
-
 class Dig(Engine):
     def start_scan(self, assets: Assets, options: Options, scan):
         results = []

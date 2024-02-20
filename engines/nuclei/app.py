@@ -16,8 +16,8 @@ class Options(BaseModel):
 class Nuclei(Engine):
     def start_scan(self, assets: Assets, options: Options, scan):
         results = []
-        
-
+        output = execute_cmd(f"./bin/nuclei")
+        results.append(output)
         return results
 
     def example_reponse(self):

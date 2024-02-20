@@ -64,7 +64,7 @@ function updateOutput() {
       props.modelValue[parseInt(index) + 1]
     );
   }
-  output.value = recursiveObjects;
+  output.value = recursiveObjects.flat();
   emits("output", output.value);
 }
 

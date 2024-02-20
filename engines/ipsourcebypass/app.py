@@ -31,7 +31,7 @@ class IpSourceBypass(Engine):
                     "status_code": 201,
                     "length": 76,
                     "curl": 'curl -k "http://localhost:3600" -H "Forwarded: 127.0.0.1" ',
-                }
+                },
             ],
         }
 

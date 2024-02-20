@@ -25,13 +25,16 @@
     <template #footer>
       <div v-if="Object.keys(props.engine.data.options).length > 0">
         <p>Options</p>
-        <div v-for="(type, name) of props.engine.data.options">
-          <Chips
-            v-if="type == 'list'"
-            :placeholder="name"
+        <div
+          v-for="(type, name) of props.engine.data.options"
+          class="my-2 w-full"
+        >
+          <Option
             v-model="scanOptions[name]"
+            class="w-full"
+            :placeholder="name"
+            :type="type"
           />
-          <InputText v-else :placeholder="name" v-model="scanOptions[name]" />
         </div>
       </div>
       <div v-if="props.engine.data.need_assets">

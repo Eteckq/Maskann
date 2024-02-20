@@ -48,7 +48,10 @@ class Engine(ABC):
                 attribut_name,
                 attribut_type,
             ) in self.scan_options.__annotations__.items():
-                options[attribut_name] = attribut_type.__name__
+                if issubclass(attribut_type, Enum):
+                    options[attribut_name] = [e.value for e in attribut_type]
+                else:
+                    options[attribut_name] = attribut_type.__name__
 
             return {
                 "engine": self.__class__.__name__,

@@ -73,11 +73,13 @@ export class EngineService {
     for (const workflow of workflows) {
       const assets = [];
       const options = {};
-      if (workflow.engineTarget.need_assets) {
-        for (const result of scan.results) {
-          assets.push(...updateOutput(result, workflow.extractAssets));
-        }
+      // Need assets
+      // if (workflow.engineTarget.need_assets) {
+      for (const result of scan.results) {
+        assets.push(...updateOutput(result, workflow.extractAssets));
       }
+      // }
+      // Extract options
       if (workflow.extractOptions) {
         for (const option in workflow.extractOptions) {
           if (!workflow.extractOptions[option].extracted) {
@@ -92,22 +94,35 @@ export class EngineService {
           }
         }
       }
+
+      // Match conditions
+      let flag = true;
       if (workflow.conditions) {
+        for (const condition of (workflow as any).conditions) {
+          if (checkCondition(condition, scan) == false) {
+            console.log('condition failed', condition);
+            flag = false;
+          }
+        }
+      }
+      if (!flag) {
         continue;
       }
 
       try {
         console.log(
-          'Try to start workflows with assets',
+          'Start workflows with assets',
           assets,
           'and options',
           options,
         );
-
-        await this.findAvailableEngineAndStartScan(workflow.engineTarget.name, {
-          assets: assets,
-          options: options,
-        });
+        return await this.findAvailableEngineAndStartScan(
+          workflow.engineTarget.name,
+          {
+            assets: assets,
+            options: options,
+          },
+        );
       } catch (error) {
         console.error('Workflow failed: ', error.message);
       }
@@ -228,8 +243,7 @@ export class EngineService {
     if (!engines[0]) {
       throw new Error('No engine available');
     }
-    await this.sendScanToEngine(engines[0], payload);
-    return true;
+    return await this.sendScanToEngine(engines[0], payload);
   }
 
   public async findWithData(): Promise<EngineWithData> {
@@ -257,6 +271,22 @@ export class EngineService {
     await this.enginesRepository.delete(id);
     return true;
   }
+}
+
+function checkCondition(condition, scan) {
+  // Equal
+  condition.toMatch = [];
+  for (const result of scan.results) {
+    condition.toMatch.push(...updateOutput(result, condition.jsonToMatch));
+  }
+  if (condition.matcher == 0) {
+    for (const toMatch of condition.toMatch) {
+      if (toMatch == condition.string) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 function updateOutput(scanObject, search) {

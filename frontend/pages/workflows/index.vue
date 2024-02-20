@@ -42,7 +42,13 @@
         placeholder="Scan def Target"
         class="w-full"
       />
-      <div v-if="workflow.engineOrigin">
+      <div
+        v-if="
+          workflow.engineOrigin &&
+          (workflow.engineTarget?.need_assets || workflow.scandefTarget)
+        "
+        class="my-4"
+      >
         <p>Extract assets</p>
         <JsonDialog
           v-model="workflow.extractAssets"
@@ -50,12 +56,21 @@
         ></JsonDialog>
       </div>
       <div v-if="!workflow.scandefTarget && workflow.engineTarget">
-        <p>Options</p>
         <div v-for="(type, option) in workflow.engineTarget.options">
           <!-- {{ type }} -->
-          <p @click="workflow.extractOptions[option] = {}">
+          <div
+            v-tooltip="
+              workflow.extractOptions[option] ? 'Remove option' : 'Add option'
+            "
+            class="cursor-pointer"
+            @click="
+              !workflow.extractOptions[option]
+                ? (workflow.extractOptions[option] = {})
+                : (workflow.extractOptions[option] = null)
+            "
+          >
             {{ option }}
-          </p>
+          </div>
           <div v-if="workflow.extractOptions[option] != undefined">
             <p>
               extracted
@@ -71,19 +86,19 @@
               :data="workflow.engineOrigin.reponse"
             ></JsonDialog>
             <div v-else>
-              <Chips
-                v-if="type == 'list'"
-                v-model="workflow.extractOptions[option].value"
-              />
-              <InputText
-                v-else
-                v-model="workflow.extractOptions[option].value"
-              />
+              <Option v-model="workflow.extractOptions[option].value" :type="type" />
             </div>
           </div>
         </div>
       </div>
-      <Button @click="createWorkflow" label="Create" />
+      <div class="my-4" v-if="workflow.engineOrigin">
+        <p>Conditions to start scan</p>
+        <RulesConstructor
+          :json="workflow.engineOrigin.reponse"
+          v-model:rules="workflow.conditions"
+        />
+      </div>
+      <Button @click="createWorkflow" label="Create" class="mt-12" />
     </div>
   </div>
 </template>
@@ -95,7 +110,7 @@ const { data: scandefs } = await useFetch(`/api/scandef`);
 
 const useScandef = ref(false);
 
-const workflow = ref({ extractOptions: {} });
+const workflow = ref({ extractOptions: {}, conditions: [] });
 
 async function createWorkflow() {
   await useFetch("/api/workflow", {

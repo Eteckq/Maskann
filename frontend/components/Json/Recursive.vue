@@ -1,25 +1,40 @@
 <template>
-  <div>
+  <div class="font-light">
     <div v-if="type === 'obj'" :style="indent">
       <div v-for="item in list">
-        {{ item }}
-        <JsonRecursive
-          class="overflow-hidden"
-          :payload="payload[item]"
-          :depth="depth + 1"
-          @pick="($event) => pick(item, $event)"
-          :selected="$props.selected"
-        />
+        <!-- If next is number or string, display it -->
+        <div
+          class="flex gap-2"
+          v-if="
+            typeof this.payload[item] === 'string' ||
+            typeof this.payload[item] === 'number'
+          "
+        >
+          <p>{{ item }}:</p>
+          <div
+            @click="initPick(item)"
+            class="cursor-pointer hover:text-red-300 font-medium"
+            :class="{
+              'text-yellow-500': $props.selected?.some(
+                (t) => t == payload[item]
+              ),
+            }"
+          >
+            {{ payload[item] }}
+          </div>
+        </div>
+
+        <div v-else>
+          <p>{{ item }}</p>
+          <JsonRecursive
+            class="overflow-hidden"
+            :payload="payload[item]"
+            :depth="depth + 1"
+            @pick="($event) => pick(item, $event)"
+            :selected="$props.selected"
+          />
+        </div>
       </div>
-    </div>
-    <div
-      @click="initPick()"
-      v-if="type === 'value'"
-      :style="indent"
-      class="cursor-pointer hover:text-red-300"
-    >
-      {{ $props.selected?.some(payload) }}
-      {{ payload }}
     </div>
   </div>
 </template>
@@ -51,9 +66,8 @@ export default {
     pick(item, $event) {
       this.$emit("pick", { keys: $event.keys.push(item), ...$event });
     },
-    initPick() {
-      this.$emit("pick", {
-        value: this.payload,
+    initPick(item) {
+      this.pick(item, {
         keys: [],
       });
     },

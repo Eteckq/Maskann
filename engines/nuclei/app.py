@@ -1,10 +1,5 @@
 from pydantic import BaseModel
-import sys
-import os
-from os.path import isfile, join
-import shutil
 
-sys.path.insert(0, os.path.join(os.path.dirname(sys.path[0])))
 from base_engine.engine import Engine, Assets
 from base_engine.utils import execute_cmd
 
@@ -16,7 +11,7 @@ class Options(BaseModel):
 class Nuclei(Engine):
     def start_scan(self, assets: Assets, options: Options, scan):
         results = []
-        output = execute_cmd(f"./bin/nuclei")
+        output = execute_cmd("./bin/nuclei")
         results.append(output)
         return results
 

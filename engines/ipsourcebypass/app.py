@@ -1,10 +1,6 @@
 from ipsourcebypass import start
-import sys
-import os
 
-sys.path.insert(0, os.path.join(os.path.dirname(sys.path[0])))
 from base_engine.engine import Engine, Assets
-from base_engine.utils import is_url
 
 
 class IpSourceBypass(Engine):

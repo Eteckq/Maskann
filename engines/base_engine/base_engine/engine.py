@@ -6,7 +6,7 @@ import uuid
 from enum import Enum
 from fastapi_socketio import SocketManager
 import asyncio
-
+from fastapi.responses import FileResponse
 
 class NoOptions(BaseModel):
     pass
@@ -41,6 +41,10 @@ class Engine(ABC):
         self.use_assets = use_assets
 
     def _setup_routes(self):
+        @self.app.get('/favicon.ico', include_in_schema=False)
+        async def favicon():
+            return FileResponse("favicon.ico")
+
         @self.app.get("/")
         async def get_status():
             options = {}

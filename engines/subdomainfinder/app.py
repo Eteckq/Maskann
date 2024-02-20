@@ -1,11 +1,6 @@
 from pydantic import BaseModel
-import sys
-import os
-from os.path import isfile, join
-import shutil
 import sublist3r
 
-sys.path.insert(0, os.path.join(os.path.dirname(sys.path[0])))
 from base_engine.engine import Engine, Assets
 from base_engine.utils import is_domain
 

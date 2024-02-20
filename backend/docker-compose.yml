@@ -13,6 +13,8 @@ services:
       - MYSQL_DATABASE=engine
     networks:
       - default
+    volumes:
+      - ./data:/var/lib/mysql
 
   adminer:
    image: adminer

@@ -1,13 +1,9 @@
 from pydantic import BaseModel
-import sys
-import os
-from os.path import isfile, join
 import pydig
+from enum import Enum
 
-sys.path.insert(0, os.path.join(os.path.dirname(sys.path[0])))
 from base_engine.engine import Engine, Assets
 from base_engine.utils import is_domain
-from enum import Enum
 
 
 class TypeDig(str, Enum):

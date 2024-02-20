@@ -78,6 +78,7 @@ export class EngineService {
       for (const result of scan.results) {
         assets.push(...updateOutput(result, workflow.extractAssets));
       }
+
       // }
       // Extract options
       if (workflow.extractOptions) {
@@ -112,14 +113,14 @@ export class EngineService {
       try {
         console.log(
           'Start workflows with assets',
-          assets,
+          assets.flat(),
           'and options',
           options,
         );
         return await this.findAvailableEngineAndStartScan(
           workflow.engineTarget.name,
           {
-            assets: assets,
+            assets: assets.flat(),
             options: options,
           },
         );
@@ -130,7 +131,9 @@ export class EngineService {
   }
 
   public async create(createEngineDto: CreateEngineDto) {
-    const engine = await this.enginesRepository.save(createEngineDto);
+    const engine = await this.enginesRepository.save({
+      url: removeTrailingSlash(createEngineDto.url),
+    });
     this.establishSocket(engine);
     return engine;
   }
@@ -320,4 +323,11 @@ function findValues(objects: any, picked: any, nextPicked: any | null) {
     }
   }
   return values;
+}
+
+function removeTrailingSlash(url) {
+  if (url.endsWith('/')) {
+    return url.slice(0, -1);
+  }
+  return url;
 }

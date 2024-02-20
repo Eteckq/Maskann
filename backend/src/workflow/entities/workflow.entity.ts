@@ -25,9 +25,9 @@ export class Workflow extends BaseEntity {
   @Column('json', { nullable: true })
   conditions: JSON;
 
-  @Column('json')
+  @Column('json', { nullable: true })
   extractAssets: JSON;
 
-  @Column('json')
+  @Column('json', { nullable: true })
   extractOptions: JSON;
 }

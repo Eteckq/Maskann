@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="p-16 flex gap-4 flex-wrap">
+    <div class="grid grid-cols-4 gap-4">
       <div class="mb-4" v-for="engine in data">
       <Engine v-if="engine.data" :engine="engine"> </Engine>
       <p v-else>Engine {{ engine.url }} is not reachable</p>

@@ -23,12 +23,28 @@ export class EngineController {
     return this.engineService.create(createEngineDto);
   }
 
+  @Post('type/:engine_name/start')
+  startScanWithEngineName(
+    @Param('engine_name') engineName: string,
+    @Body() payload: StartScanDto,
+  ) {
+    return this.engineService.findAvailableEngineAndStartScan(
+      engineName,
+      payload,
+    );
+  }
+
   @Post(':engine_id/start')
   startScan(
     @Param('engine_id') engineId: string,
     @Body() payload: StartScanDto,
   ) {
     return this.engineService.startScan(engineId, payload);
+  }
+
+  @Get('history')
+  getScanHistory() {
+    return this.engineService.volatileHistory;
   }
 
   @Get('types')

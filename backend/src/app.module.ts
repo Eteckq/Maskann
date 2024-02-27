@@ -5,6 +5,7 @@ import { EngineModule } from './engine/engine.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScandefModule } from './scandef/scandef.module';
 import { WorkflowModule } from './workflow/workflow.module';
+import { CampaignModule } from './campaign/campaign.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { WorkflowModule } from './workflow/workflow.module';
     EngineModule,
     ScandefModule,
     WorkflowModule,
+    CampaignModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,14 +1,6 @@
 <template>
-  <div class="p-16 flex gap-4 flex-wrap">
-    <Card v-for="engine in data">
-      <template #title>{{ engine.name }}</template>
-      <template #content>
-        <p>
-          {{ engine.need_assets }}
-        </p>
-        <p>{{ engine.options }}</p>
-      </template>
-    </Card>
+  <div class="p-16 grid grid-cols-4 gap-4">
+    <EngineType v-for="engine in data" :engine="engine" />
   </div>
 </template>
 

@@ -1,11 +1,10 @@
-from pydantic import BaseModel
 import json
 
-from base_engine.engine import Engine, Assets
+from base_engine.engine import Engine, Assets, BaseOptions
 from base_engine.utils import execute_cmd
 
 
-class Options(BaseModel):
+class Options(BaseOptions):
     template: str
 
 

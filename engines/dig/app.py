@@ -1,8 +1,7 @@
-from pydantic import BaseModel
 import pydig
 from enum import Enum
 
-from base_engine.engine import Engine, Assets
+from base_engine.engine import Engine, Assets, BaseOptions
 from base_engine.utils import is_domain
 
 
@@ -23,7 +22,7 @@ class TypeDig(str, Enum):
     TXT = "TXT"
 
 
-class Options(BaseModel):
+class Options(BaseOptions):
     type_dig: TypeDig
 
 class Dig(Engine):

@@ -1,13 +1,12 @@
-from pydantic import BaseModel
 import os
 from os.path import isfile, join
 import shutil
 
-from base_engine.engine import Engine, Assets
+from base_engine.engine import Engine, Assets, BaseOptions
 from base_engine.utils import execute_cmd
 
 
-class Options(BaseModel):
+class Options(BaseOptions):
     tokens: list[str]
 
 

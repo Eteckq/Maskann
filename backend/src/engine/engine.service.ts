@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateEngineDto } from './dto/create-engine.dto';
 import { UpdateEngineDto } from './dto/update-engine.dto';
 import { Engine } from './entities/engine.entity';
@@ -24,11 +24,17 @@ export interface EngineWithData extends Engine {
 
 export interface Scan {
   results: any[];
+  id: string;
+  from: string;
 }
 
 @Injectable()
 export class EngineService {
   private clients: Socket[] = [];
+  private readonly workflowsLogger = new Logger('Workflows');
+  private readonly logger = new Logger(EngineService.name);
+
+  public volatileHistory: Scan[] = [];
 
   constructor(
     @InjectRepository(Engine)
@@ -55,7 +61,7 @@ export class EngineService {
     const client = io(`${engine.url}`);
     this.clients.push(client);
     client.on('connect', () => {
-      console.log(`Engine ${engine.url} is connected`);
+      this.logger.debug(`Engine ${engine.url} is connected`);
     });
     client.on('scan-finished', (data) => {
       this.iterateWorkflowsFromEndedScan(engine, data);
@@ -63,9 +69,10 @@ export class EngineService {
     this.clients.push(client);
   }
 
-  private async iterateWorkflowsFromEndedScan(engine: Engine, scan_id: any) {
-    const scan = await this.getEngineScan(engine, scan_id);
+  private async iterateWorkflowsFromEndedScan(engine: Engine, scan_id: string) {
     const type = await this.getEngineData(engine);
+    const scan = await this.getEngineScan(engine, scan_id);
+    this.volatileHistory.push(scan);
 
     const workflows = await this.workflowService.findForEngineSource(
       type.engine,
@@ -101,7 +108,7 @@ export class EngineService {
       if (workflow.conditions) {
         for (const condition of (workflow as any).conditions) {
           if (checkCondition(condition, scan) == false) {
-            console.log('condition failed', condition);
+            this.workflowsLogger.verbose('condition failed', condition);
             flag = false;
           }
         }
@@ -111,7 +118,7 @@ export class EngineService {
       }
 
       try {
-        console.log(
+        this.workflowsLogger.debug(
           'Start workflows with assets',
           assets.flat(),
           'and options',
@@ -125,7 +132,7 @@ export class EngineService {
           },
         );
       } catch (error) {
-        console.error('Workflow failed: ', error.message);
+        this.workflowsLogger.error('Workflow failed: ', error.message);
       }
     }
   }

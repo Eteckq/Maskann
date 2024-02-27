@@ -1,5 +1,5 @@
 <template>
-  <Card style="width: 25rem; overflow: hidden">
+  <Card class="h-full">
     <!-- <template #header>
       {{ props.engine.data.engine }}
     </template> -->
